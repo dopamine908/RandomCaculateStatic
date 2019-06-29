@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="{{ app()->getLocale() }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Laravel</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+    <!-- Fonts -->
+    <link href="https://unpkg.com/nes.css@2.1.0/css/nes.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+    <link href="https://unpkg.com/nes.css/css/nes.css" rel="stylesheet" />
+    <!--<link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">-->
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+
+
+    <!-- Styles -->
+    <style>
+        /*html, body {*/
+            /*background-color: #fff;*/
+            /*color: #636b6f;*/
+            /*!*font-family: 'Raleway', sans-serif;*!*/
+            /*font-weight: 100;*/
+            /*height: 100vh;*/
+            /*margin: 0;*/
+        /*}*/
+
+        .title {
+            font-size: 60px;
+            display: flex;
+        }
+
+        .body {
+            display: flex;
+            flex-direction: column;
+            width: auto;
+         }
+
+        #counter {
+            text-align: center;
+        }
+
+        .content {
+            flex: 9;
+            align-self: center;
+            margin: 5%;
+        }
+
+        .nav {
+            flex: 1;
+            display: flex;
+
+        }
+
+        .nav-right {
+            flex: 4;
+            margin: 2%;
+        }
+
+        .nav-center {
+            flex: 1;
+            margin: 2%;
+        }
+
+        .nav-left {
+            flex: 2;
+            margin: 2%;
+        }
+    </style>
+</head>
+<body>
+<div class="body">
+    <input type="hidden" id="Level" value="Level1">
+    <div class="nav">
+        <!--<input type="number" class="form-control mb-2" min="1" id="MaxTime" value="5">-->
+        <div class="nes-field is-inline nav-left">
+            <input type="number" class="nes-input is-success" min="1" id="MaxTime" value="5">
+        </div>
+        <!--<button type="button" id="SwitchButton" class="btn btn-outline-success" onclick="Start()">開始</button>-->
+        <button type="button" id="SwitchButton" class="nes-btn is-success nav-center" onclick="Start()">開始</button>
+        <!--<div class="dropdown">-->
+            <!--<button class="btn btn-outline-success dropdown-toggle" type="button" id="changeLevelButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+                <!--請選擇難度-->
+            <!--</button>-->
+            <!--<div class="dropdown-menu" aria-labelledby="dropdownMenu2">-->
+                <!--<button class="dropdown-item" type="button" onclick="changeLevel(1)">簡單</button>-->
+                <!--<button class="dropdown-item" type="button" onclick="changeLevel(2)">一般</button>-->
+                <!--<button class="dropdown-item" type="button" onclick="changeLevel(3)">困難</button>-->
+                <!--<button class="dropdown-item" type="button" onclick="changeLevel(4)">極難</button>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="nav-right">
+            <!--<label for="success_select">請選擇難度</label>-->
+            <div class="nes-select is-success">
+                <select required id="success_select" onclick="changeLevel(this.value)">
+                    <option value="" disabled selected hidden>請選擇難度</option>
+                    <option value="1">難度 ： 簡單</option>
+                    <option value="2">難度 ： 一般</option>
+                    <option value="3">難度 ： 困難</option>
+                    <option value="4">難度 ： 極難</option>
+                </select>
+            </div>
+        </div>
+
+
+        <!--<button type="button" id="SwitchButton" class="nes-btn is-success" onclick="generateQuestion()">出題</button>-->
+    </div>
+
+    <div class="content">
+        <div class="title">
+            <div id="QuestionText">Hello！</div>
+            <div id="AnswerText"></div>
+            <div id="QuestionMark">？</div>
+        </div>
+        <div class="">
+            <div id="counter">00:00</div>
+        </div>
+    </div>
+</div>
+</body>
+<!-- Scripts -->
+<script>
+    var Level = document.getElementById('Level').value;
+    var startTime = 0;
+    var intervalId;
+    var counting = false;
+    var MaxTime;
+
+    function updateCounter() {
+        console.log(startTime);
+        var currentTime = Date.now();
+        console.log(currentTime);
+        var msecond = ("" + (currentTime - startTime) % 1000).substr(-3, 3);
+        var counter = Math.floor((currentTime - startTime)/1000);
+        var second = ("0" + Math.floor(counter % 60)).substr(-2, 2);
+        // $('#counter').html( (4-second) + ':' + (1000-msecond));
+        $('#counter').html( MaxTime-second );
+        console.log(MaxTime-second);
+        if(MaxTime-second < 0) {
+            $('#AnswerText').show();
+            $('#QuestionMark').hide();
+            // $('#counter').html( ('00 : 000'));
+            $('#counter').html( ('0'));
+            clearInterval(intervalId);
+            setTimeout(function () {
+                counting = false;
+                Start();
+            }, 1000);
+        }
+    }
+
+    function Start() {
+        console.log($('#MaxTime').val());
+        MaxTime = $('#MaxTime').val() - 1;
+        console.log(MaxTime);
+        console.log(counting);
+        if (counting) {
+            clearInterval(intervalId);
+        } else {
+            generateQuestion();
+            startTime = Date.now();
+            intervalId = setInterval(updateCounter, 15);
+        }
+
+        counting = !counting;
+        $('#SwitchButton').html(counting ? '停止' : '開始');
+    }
+
+    function changeLevel(_Level) {
+        switch( Number(_Level) )
+        {
+            case 1:
+//                console.log(1);
+                Level = 'Level1';
+//                $('#changeLevelButton').html('難度 ： 簡單');
+                break;
+            case 2:
+//                console.log(2);
+                Level = 'Level2';
+//                $('#changeLevelButton').html('難度 ： 一般');
+                break;
+            case 3:
+//                console.log(3);
+                Level = 'Level3';
+//                $('#changeLevelButton').html('難度 ： 困難');
+                break;
+            case 4:
+//                console.log(4);
+                Level = 'Level4';
+//                $('#changeLevelButton').html('難度 ： 極難');
+                break;
+            default:
+//                console.log(11);
+                Level = 'Level1';
+//                $('#changeLevelButton').html('難度 ： 簡單');
+        }
+        return Level;
+    }
+
+    function generateQuestion() {
+//        var _Level = Level;
+        var _Level = changeLevel( $('#success_select').val() );
+//        console.log(_Level);
+        var Operator = getOperator(_Level);
+        var N1 = getN1(_Level, Operator);
+        var N2 = getN2(_Level, Operator, N1);
+        var Question = getQuestionText(Operator, N1, N2);
+        var Answer = getAnswerText(Operator, N1, N2);
+        $('#QuestionText').html(Question);
+        $('#AnswerText').html(Answer).hide();
+        $('#QuestionMark').show();
+    }
+    function getAnswerText(_Operator, _N1, _N2) {
+        var Answer;
+        switch(_Operator)
+        {
+            case 'Plus':
+                Answer = _N1 + _N2;
+                break;
+            case 'Minus':
+                Answer = _N1 - _N2;
+                break;
+            case 'Cross':
+                Answer = _N1 * _N2;
+                break;
+            default:
+                Answer = _N1 + _N2;
+        }
+        return Answer;
+    }
+    function getQuestionText(_Operator, _N1, _N2) {
+        var Question;
+        switch(_Operator)
+        {
+            case 'Plus':
+                Question = _N1 + ' + ' + _N2 + ' = ';
+                break;
+            case 'Minus':
+                Question = _N1 + ' - ' + _N2 + ' = ';
+                break;
+            case 'Cross':
+                Question = _N1 + ' x ' + _N2 + ' = ';
+                break;
+            default:
+                Question = _N1 + ' + ' + _N2 + ' = ';
+        }
+        return Question;
+    }
+
+    function getOperator(_Level) {
+        var OpratorArr = new Array();
+        switch(_Level)
+        {
+            case 'Level1': //+ -
+                OpratorArr = ['Plus', 'Minus'];
+                break;
+            case 'Level2': //+ - x
+            case 'Level3': //+ - x
+            case 'Level4': //+ - x
+                OpratorArr = ['Plus', 'Minus', 'Cross'];
+                break;
+            default:
+                OpratorArr = ['Plus'];
+        }
+        return OpratorArr[Math.floor(Math.random() * OpratorArr.length)];
+    }
+
+    function getN1(_Level, _Operator) {
+        var N1;
+        switch(_Level)
+        {
+            case 'Level1': //+ -
+                N1 = getN1_Level1(_Operator);
+                break;
+            case 'Level2': //+ - x
+                N1 = getN1_Level2(_Operator);
+                break;
+            case 'Level3': //+ - x
+                N1 = getN1_Level3(_Operator);
+                break;
+            case 'Level4': //+ - x
+                N1 = getN1_Level4(_Operator);
+                break;
+            default:
+                N1 = getN1_Level1(_Operator);
+        }
+        return N1;
+    }
+
+    function getN2(_Level, _Operator, _N1) {
+        var N2;
+        switch(_Level)
+        {
+            case 'Level1': //+ -
+                N2 = getN2_Level1(_Operator, _N1);
+                break;
+            case 'Level2': //+ - x
+                N2 = getN2_Level2(_Operator, _N1);
+                break;
+            case 'Level3': //+ - x
+                N2 = getN2_Level3(_Operator, _N1);
+                break;
+            case 'Level4': //+ - x
+                N2 = getN2_Level4(_Operator, _N1);
+                break;
+            default:
+                N2 = getN2_Level1(_Operator, _N1);
+        }
+        return N2;
+    }
+
+    function getN1_Level1(_Operator) {
+        var N1;
+        switch(_Operator)
+        {
+            case 'Plus':
+            case 'Minus':
+                N1 = getRandom(1, 9);
+                break;
+            default:
+                N1 = getRandom(1, 9);
+        }
+        return N1;
+    }
+    function getN1_Level2(_Operator) {
+        var N1;
+        switch(_Operator)
+        {
+            case 'Plus':
+            case 'Minus':
+                N1 = getRandom(1, 19);
+                break;
+            case 'Cross':
+                N1 = getRandom(1, 9);
+                break;
+            default:
+                N1 = getRandom(1, 19);
+        }
+        return N1;
+    }
+    function getN1_Level3(_Operator) {
+        var N1;
+        switch(_Operator)
+        {
+            case 'Plus':
+            case 'Minus':
+                N1 = getRandom(19, 99);
+                break;
+            case 'Cross':
+                N1 = getRandom(1, 19);
+                break;
+            default:
+                N1 = getRandom(19, 99);
+        }
+        return N1;
+    }
+    function getN1_Level4(_Operator) {
+        var N1;
+        switch(_Operator)
+        {
+            case 'Plus':
+            case 'Minus':
+                N1 = getRandom(100, 199);
+                break;
+            case 'Cross':
+                N1 = getRandom(1, 19);
+                break;
+            default:
+                N1 = getRandom(100, 199);
+        }
+        return N1;
+    }
+
+    function getN2_Level1(_Operator, _N1) {
+        var N2;
+        switch(_Operator)
+        {
+            case 'Plus':
+                N2 = getRandom(1, 9);
+                break;
+            case 'Minus':
+                N2 = getRandom(1, _N1);
+                break;
+            default:
+                N2 = getRandom(1, 9);
+        }
+        return N2;
+    }
+    function getN2_Level2(_Operator, _N1) {
+        var N2;
+        switch(_Operator)
+        {
+            case 'Plus':
+                N2 = getRandom(1, 19);
+                break;
+            case 'Minus':
+                N2 = getRandom(1, _N1);
+                break;
+            case 'Cross':
+                N2 = getRandom(1, 9);
+                break;
+            default:
+                N2 = getRandom(1, 19);
+        }
+        return N2;
+    }
+    function getN2_Level3(_Operator, _N1) {
+        var N2;
+        switch(_Operator)
+        {
+            case 'Plus':
+                N2 = getRandom(19, 99);
+                break;
+            case 'Minus':
+                N2 = getRandom(19, _N1);
+                break;
+            case 'Cross':
+                N2 = getRandom(1, 9);
+                break;
+            default:
+                N2 = getRandom(19, 99);
+        }
+        return N2;
+    }
+    function getN2_Level4(_Operator, _N1) {
+        var N2;
+        switch(_Operator)
+        {
+            case 'Plus':
+                N2 = getRandom(100, 199);
+                break;
+            case 'Minus':
+                N2 = getRandom(100, _N1);
+                break;
+            case 'Cross':
+                N2 = getRandom(11, 19);
+                break;
+            default:
+                N2 = getRandom(100, 199);
+        }
+        return N2;
+    }
+
+    /**
+     * get x where _min <= x <= _max
+     *
+     * @param _min
+     * @param _max
+     * @returns {*}
+     */
+    function getRandom(_min, _max) {
+        return Math.round(Math.random() * (_max - _min)) + _min;
+    }
+</script>
+</html>
