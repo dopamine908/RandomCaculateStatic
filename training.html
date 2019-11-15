@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="{{ app()->getLocale() }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Laravel</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+
+
+    <!-- Styles -->
+    <style>
+        html, body {
+            background-color: #fff;
+            color: #636b6f;
+            /*font-family: 'Raleway', sans-serif;*/
+            font-weight: 100;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .full-height {
+            height: 100vh;
+        }
+
+        .flex-center {
+            align-items: center;
+            display: flex;
+            justify-content: center;
+        }
+
+        .position-ref {
+            position: relative;
+        }
+
+        .top-right {
+            position: absolute;
+            right: 10px;
+            top: 18px;
+        }
+
+        .content {
+            text-align: center;
+        }
+
+        .title {
+            font-size: 84px;
+        }
+
+        .links > a {
+            color: #636b6f;
+            padding: 0 25px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .1rem;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .m-b-md {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="flex-center position-ref full-height">
+    <input type="hidden" id="Level" value="Level1">
+
+
+
+    <div class="top-right links row">
+        <input type="number" class="form-control mb-2" min="1" id="MaxTime" value="5">
+        <button type="button" id="SwitchButton" class="btn btn-outline-success" onclick="Start()">開始</button>
+        <div class="dropdown">
+            <button class="btn btn-outline-success dropdown-toggle" type="button" id="SelectStrings" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                請選擇弦
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1" name="Strings[]" checked>
+                    <label class="form-check-label">
+                        1
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="2" name="Strings[]" checked>
+                    <label class="form-check-label">
+                        2
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="3" name="Strings[]" checked>
+                    <label class="form-check-label">
+                        3
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="4" name="Strings[]" checked>
+                    <label class="form-check-label">
+                        4
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="5" name="Strings[]" checked>
+                    <label class="form-check-label">
+                        5
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="6" name="Strings[]" checked>
+                    <label class="form-check-label">
+                        6
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-outline-success dropdown-toggle" type="button" id="SelectNotation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                請選擇音名
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="C" name="Notation[]" checked>
+                    <label class="form-check-label">
+                        C
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="#C" name="Notation[]" checked>
+                    <label class="form-check-label">
+                        #C
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="bD" name="Notation[]" checked>
+                    <label class="form-check-label">
+                        bD
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="D" name="Notation[]" checked>
+                    <label class="form-check-label">
+                        D
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="#D" name="Notation[]" checked>
+                    <label class="form-check-label">
+                        #D
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="bE" name="Notation[]" checked>
+                    <label class="form-check-label">
+                        bE
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="E" name="Notation[]" checked>
+                    <label class="form-check-label">
+                        E
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="F" name="Notation[]" checked>
+                    <label class="form-check-label">
+                        F
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="#F" name="Notation[]" checked>
+                    <label class="form-check-label">
+                        #F
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="bG" name="Notation[]" checked>
+                    <label class="form-check-label">
+                        bG
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="G" name="Notation[]" checked>
+                    <label class="form-check-label">
+                        G
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="#G" name="Notation[]" checked>
+                    <label class="form-check-label">
+                        #G
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="bA" name="Notation[]" checked>
+                    <label class="form-check-label">
+                        bA
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="A" name="Notation[]" checked>
+                    <label class="form-check-label">
+                        A
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="#A" name="Notation[]" checked>
+                    <label class="form-check-label">
+                        #A
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="bB" name="Notation[]" checked>
+                    <label class="form-check-label">
+                        bB
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="B" name="Notation[]" checked>
+                    <label class="form-check-label">
+                        B
+                    </label>
+                </div>
+            </div>
+        </div>
+        <!--<button type="button" class="btn btn-outline-success" onclick="generateQuestion()">出題</button>-->
+    </div>
+
+    <div class="content">
+        <div class="content">
+            <h3 id="QuestionText1">Hello！</h3>
+        </div>
+        <div class="content">
+            <h3 id="QuestionText2">Hello！</h3>
+        </div>
+        <div class="content">
+            <div id="counter">00:00</div>
+        </div>
+    </div>
+</div>
+</body>
+<!-- Scripts -->
+<script>
+    var Level = document.getElementById('Level').value;
+    var startTime = 0;
+    var intervalId;
+    var counting = false;
+    var MaxTime;
+
+    function updateCounter() {
+        var currentTime = Date.now();
+        var msecond = ("" + (currentTime - startTime) % 1000).substr(-3, 3);
+        var counter = Math.floor((currentTime - startTime)/1000);
+        var second = ("0" + Math.floor(counter % 60)).substr(-2, 2);
+        // $('#counter').html( (4-second) + ':' + (1000-msecond));
+        $('#counter').html( MaxTime-second );
+        console.log(MaxTime-second);
+        if(MaxTime-second < 0) {
+            $('#AnswerText').show();
+            $('#QuestionMark').hide();
+            // $('#counter').html( ('00 : 000'));
+            $('#counter').html( ('0'));
+            clearInterval(intervalId);
+            setTimeout(function () {
+                counting = false;
+                Start();
+            }, 0);
+        }
+    }
+
+    function Start() {
+        MaxTime = $('#MaxTime').val() - 1;
+        if (counting) {
+            clearInterval(intervalId);
+        } else {
+            generateTraining();
+            startTime = Date.now();
+            intervalId = setInterval(updateCounter, 0);
+        }
+
+        counting = !counting;
+        $('#SwitchButton').html(counting ? '停止' : '開始');
+    }
+
+    function getNotation() {
+        var Notations = $("input[name='Notation[]']:checkbox:checked").map(function(){
+            return $(this).val();
+        }).get();
+        return Notations;
+    }
+
+    function getStrings() {
+        var Strings = $("input[name='Strings[]']:checkbox:checked").map(function(){
+            return $(this).val();
+        }).get();
+        return Strings;
+    }
+
+    function getArrayRandomElement(Arr) {
+        var Element = Arr[Math.floor(Math.random()*Arr.length)];
+        return Element;
+    }
+
+    function generateTraining() {
+        var Notation = getArrayRandomElement(getNotation());
+        var Strings = getArrayRandomElement(getStrings());
+        $('#QuestionText1').html(Strings);
+        $('#QuestionText2').html(Notation);
+        console.log(Notation, Strings);
+    }
+
+</script>
+</html>
