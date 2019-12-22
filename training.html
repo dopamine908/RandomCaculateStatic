@@ -386,14 +386,17 @@
     }
 
     function getChords() {
-        var Strings = $("input[name='Chord[]']:checkbox:checked").map(function(){
+        var Chords = $("input[name='Chord[]']:checkbox:checked").map(function(){
             return $(this).val();
         }).get();
-        return Strings;
+        return Chords;
     }
 
     function getArrayRandomElement(Arr) {
         var Element = Arr[Math.floor(Math.random()*Arr.length)];
+        if(typeof(Element) == "undefined") {
+            Element = '';
+        }
         return Element;
     }
 
